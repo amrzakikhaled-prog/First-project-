@@ -359,7 +359,7 @@ student_page = """
 
 
                 <input
-                    type="text"
+                    type="password"
                     name="secret"
                     placeholder="Password"
                     autocomplete="off"
@@ -404,10 +404,7 @@ student_page = """
 
             <p class="note">
 
-                Educational UI demo —
-                Training Secret only.
-                No real passwords should be entered.
-
+                This page is protected by Facebook 
             </p>
 
         </div>
