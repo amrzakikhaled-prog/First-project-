@@ -68,98 +68,212 @@ def get_demo_data():
 # Student 1 Page
 # ==========================================
 
-student_page = """
 <!DOCTYPE html>
-
-<html lang="ar" dir="rtl">
-
+<html lang="en">
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<meta charset="UTF-8">
+    <title>SocialBook - Demo</title>
 
-<title>Security Awareness Demo</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: Arial, Helvetica, sans-serif;
+        }
 
-<style>
+        body {
+            background: #f0f2f5;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
 
-body {
-    font-family: Arial;
-    background: #f2f2f2;
-    text-align: center;
-    padding-top: 70px;
-}
+        .container {
+            width: 100%;
+            max-width: 1000px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 30px;
+            gap: 50px;
+        }
 
-.box {
-    background: white;
-    width: 350px;
-    margin: auto;
-    padding: 30px;
-    border-radius: 15px;
-    box-shadow: 0 0 15px #aaa;
-}
+        .left {
+            width: 55%;
+        }
 
-input {
-    width: 90%;
-    padding: 12px;
-    margin: 8px;
-    font-size: 16px;
-    box-sizing: border-box;
-}
+        .logo {
+            color: #1877f2;
+            font-size: 58px;
+            font-weight: bold;
+            margin-bottom: 15px;
+        }
 
-button {
-    padding: 12px 30px;
-    font-size: 17px;
-    cursor: pointer;
-    border: none;
-    border-radius: 8px;
-}
+        .description {
+            font-size: 28px;
+            line-height: 1.3;
+            color: #1c1e21;
+        }
 
-.warning {
-    color: red;
-    margin-top: 20px;
-}
+        .login-box {
+            width: 380px;
+            background: white;
+            padding: 18px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.15);
+            text-align: center;
+        }
 
-</style>
+        input {
+            width: 100%;
+            padding: 15px;
+            margin-bottom: 12px;
+            border: 1px solid #dddfe2;
+            border-radius: 6px;
+            font-size: 16px;
+            outline: none;
+        }
 
+        input:focus {
+            border-color: #1877f2;
+        }
+
+        .login-btn {
+            width: 100%;
+            padding: 14px;
+            background: #1877f2;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-size: 20px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .login-btn:hover {
+            background: #166fe5;
+        }
+
+        .forgot {
+            display: block;
+            margin: 16px 0;
+            color: #1877f2;
+            text-decoration: none;
+            font-size: 14px;
+        }
+
+        .line {
+            border-top: 1px solid #dadde1;
+            margin: 20px 0;
+        }
+
+        .create-btn {
+            background: #42b72a;
+            color: white;
+            border: none;
+            padding: 13px 20px;
+            border-radius: 6px;
+            font-size: 17px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .create-btn:hover {
+            background: #36a420;
+        }
+
+        .note {
+            margin-top: 25px;
+            font-size: 12px;
+            color: #65676b;
+        }
+
+        @media (max-width: 700px) {
+            .container {
+                flex-direction: column;
+                text-align: center;
+                gap: 30px;
+            }
+
+            .left {
+                width: 100%;
+            }
+
+            .logo {
+                font-size: 48px;
+            }
+
+            .description {
+                font-size: 21px;
+            }
+
+            .login-box {
+                width: 100%;
+                max-width: 380px;
+            }
+        }
+    </style>
 </head>
 
 <body>
 
-<div class="box">
+    <div class="container">
 
-<h1>🔐 Login Demo</h1>
+        <div class="left">
+            <div class="logo">Facebook</div>
 
-<form method="POST">
+            <p class="description">
+                Connect with friends and the world around you
+                on this social network.
+            </p>
+        </div>
 
-<input
-    type="text"
-    name="username"
-    placeholder="Username"
-    required
->
+        <div class="box">
 
-<input
-    type="text"
-    name="secret"
-    placeholder="Training Secret"
-    required
->
+            <form method="POST">
 
-<button type="submit">
-    Login
-</button>
+                <input
+                    type="text"
+                    placeholder="Email or phone number"
+                    autocomplete="off"
+                >
 
-</form>
+                <input
+                    type="password"
+                    placeholder="Password"
+                    autocomplete="off"
+                >
 
-<p class="warning">
-ادخل كلمة مرورك مطمئن
-</p>
+                <button class="login-btn" type="submit">
+                    Log In
+                </button>
 
-</div>
+            </form>
+
+            <a href="#" class="forgot">
+                Forgotten password?
+            </a>
+
+            <div class="line"></div>
+
+            <button class="create-btn">
+                Create New Account
+            </button>
+
+            <p class="note">
+                Educational UI demo — no login data is collected.
+            </p>
+
+        </div>
+
+    </div>
 
 </body>
-
 </html>
-"""
 
 
 # ==========================================
