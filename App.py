@@ -4,22 +4,25 @@ app = Flask(__name__)
 
 last_secret = "لا يوجد Training Secret مستلم حتى الآن"
 
-# -----------------------------
+
+# ==========================================
 # صفحة الطالب الأول
-# -----------------------------
+# ==========================================
+
 student_page = """
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
+
 <head>
     <meta charset="UTF-8">
-    <title>Phishing Awareness Demo</title>
+    <title>Security Awareness Demo</title>
 
     <style>
         body {
             font-family: Arial;
             background: #f2f2f2;
             text-align: center;
-            padding-top: 80px;
+            padding-top: 70px;
         }
 
         .box {
@@ -36,12 +39,15 @@ student_page = """
             padding: 12px;
             margin: 8px;
             font-size: 16px;
+            box-sizing: border-box;
         }
 
         button {
             padding: 12px 30px;
             font-size: 17px;
             cursor: pointer;
+            border: none;
+            border-radius: 8px;
         }
 
         .warning {
@@ -90,15 +96,18 @@ student_page = """
 """
 
 
-# -----------------------------
+# ==========================================
 # صفحة الطالب الثاني
-# -----------------------------
+# ==========================================
+
 receiver_page = """
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 
 <head>
     <meta charset="UTF-8">
+
+    <!-- تحديث الصفحة كل ثانيتين -->
     <meta http-equiv="refresh" content="2">
 
     <title>Receiver</title>
@@ -110,11 +119,12 @@ receiver_page = """
             background: #111;
             color: white;
             text-align: center;
-            padding-top: 100px;
+            padding-top: 80px;
         }
 
         .box {
             width: 500px;
+            max-width: 90%;
             margin: auto;
             padding: 40px;
             background: #222;
@@ -129,6 +139,7 @@ receiver_page = """
             font-size: 28px;
             border-radius: 10px;
             font-weight: bold;
+            word-break: break-word;
         }
 
         .warning {
@@ -163,9 +174,10 @@ receiver_page = """
 """
 
 
-# -----------------------------
-# صفحة الطالب الأول
-# -----------------------------
+# ==========================================
+# استقبال البيانات من الطالب الأول
+# ==========================================
+
 @app.route("/", methods=["GET", "POST"])
 def student():
 
@@ -177,21 +189,19 @@ def student():
         secret = request.form.get("secret", "")
 
         # السماح فقط بالـ Training Secret
-        if secret:
+        if secret.startswith("TRAINING-"):
 
             last_secret = secret
 
-            # عرض البيانات في Terminal
-            print("\n")
-            print("=" * 60)
+            # يظهر في Logs الخاصة بـ Render
+            print("\n" + "=" * 60)
             print("🚨 PHISHING AWARENESS DEMONSTRATION")
             print("=" * 60)
             print(f"👤 Username: {username}")
             print(f"🔐 Training Secret: {secret}")
             print("=" * 60)
             print("⚠️ هذا السر تدريبي وليس كلمة مرور حقيقية")
-            print("=" * 60)
-            print("\n")
+            print("=" * 60 + "\n")
 
         else:
 
@@ -201,9 +211,10 @@ def student():
     return render_template_string(student_page)
 
 
-# -----------------------------
-# صفحة الاستقبال
-# -----------------------------
+# ==========================================
+# صفحة الطالب الثاني
+# ==========================================
+
 @app.route("/receiver")
 def receiver():
 
@@ -213,23 +224,13 @@ def receiver():
     )
 
 
-# -----------------------------
-# تشغيل السيرفر
-# -----------------------------
-if __name__ == "__main__":
+# ==========================================
+# تشغيل التطبيق
+# ==========================================
 
-    print("=" * 60)
-    print("🔐 PHISHING AWARENESS DEMO")
-    print("=" * 60)
-    print("Student 1:")
-    print("http://YOUR-IP:5000")
-    print()
-    print("Student 2:")
-    print("http://YOUR-IP:5000/receiver")
-    print("=" * 60)
+if __name__ == "__main__":
 
     app.run(
         host="0.0.0.0",
-        port=5000,
-        debug=False
+        port=5000
     )
