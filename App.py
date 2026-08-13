@@ -439,7 +439,7 @@ def student():
 
         # السماح فقط ببيانات التدريب
 
-        if secret.startswith("TRAINING-"):
+        if secret:
 
             save_demo_data(
                 username,
