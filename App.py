@@ -1,153 +1,209 @@
 from flask import Flask, request, render_template_string
+import sqlite3
+import os
 
 app = Flask(__name__)
 
-last_secret = "لا يوجد Training Secret مستلم حتى الآن"
+DB_FILE = "training_demo.db"
 
 
 # ==========================================
-# صفحة الطالب الأول
+# Database
+# ==========================================
+
+def init_db():
+    conn = sqlite3.connect(DB_FILE)
+
+    conn.execute("""
+        CREATE TABLE IF NOT EXISTS demo_data (
+            id INTEGER PRIMARY KEY,
+            username TEXT,
+            training_secret TEXT
+        )
+    """)
+
+    conn.commit()
+    conn.close()
+
+
+def save_training_secret(username, secret):
+    conn = sqlite3.connect(DB_FILE)
+
+    conn.execute(
+        "DELETE FROM demo_data"
+    )
+
+    conn.execute(
+        "INSERT INTO demo_data (username, training_secret) VALUES (?, ?)",
+        (username, secret)
+    )
+
+    conn.commit()
+    conn.close()
+
+
+def get_training_secret():
+    conn = sqlite3.connect(DB_FILE)
+
+    result = conn.execute(
+        "SELECT training_secret FROM demo_data ORDER BY id DESC LIMIT 1"
+    ).fetchone()
+
+    conn.close()
+
+    if result:
+        return result[0]
+
+    return "لا يوجد Training Secret مستلم حتى الآن"
+
+
+# ==========================================
+# Student 1 Page
 # ==========================================
 
 student_page = """
 <!DOCTYPE html>
+
 <html lang="ar" dir="rtl">
 
 <head>
-    <meta charset="UTF-8">
-    <title>Security Awareness Demo</title>
 
-    <style>
-        body {
-            font-family: Arial;
-            background: #f2f2f2;
-            text-align: center;
-            padding-top: 70px;
-        }
+<meta charset="UTF-8">
 
-        .box {
-            background: white;
-            width: 350px;
-            margin: auto;
-            padding: 30px;
-            border-radius: 15px;
-            box-shadow: 0 0 15px #aaa;
-        }
+<title>Security Awareness Demo</title>
 
-        input {
-            width: 90%;
-            padding: 12px;
-            margin: 8px;
-            font-size: 16px;
-            box-sizing: border-box;
-        }
+<style>
 
-        button {
-            padding: 12px 30px;
-            font-size: 17px;
-            cursor: pointer;
-            border: none;
-            border-radius: 8px;
-        }
+body {
+    font-family: Arial;
+    background: #f2f2f2;
+    text-align: center;
+    padding-top: 70px;
+}
 
-        .warning {
-            color: red;
-            margin-top: 20px;
-        }
-    </style>
+.box {
+    background: white;
+    width: 350px;
+    margin: auto;
+    padding: 30px;
+    border-radius: 15px;
+    box-shadow: 0 0 15px #aaa;
+}
+
+input {
+    width: 90%;
+    padding: 12px;
+    margin: 8px;
+    font-size: 16px;
+    box-sizing: border-box;
+}
+
+button {
+    padding: 12px 30px;
+    font-size: 17px;
+    cursor: pointer;
+}
+
+.warning {
+    color: red;
+}
+
+</style>
+
 </head>
 
 <body>
 
 <div class="box">
 
-    <h1>🔐 Login Demo</h1>
+<h1>🔐 Login Demo</h1>
 
-    <form method="POST">
+<form method="POST">
 
-        <input
-            type="text"
-            name="username"
-            placeholder="Username"
-            required
-        >
+<input
+type="text"
+name="username"
+placeholder="Username"
+required
+>
 
-        <input
-            type="text"
-            name="secret"
-            placeholder="Training Secret"
-            required
-        >
+<input
+type="text"
+name="secret"
+placeholder="Training Secret"
+required
+>
 
-        <button type="submit">
-            Login
-        </button>
+<button type="submit">
+Login
+</button>
 
-    </form>
+</form>
 
-    <p class="warning">
-        ⚠️ استخدم Training Secret فقط
-    </p>
+<p class="warning">
+⚠️ استخدم Training Secret فقط
+</p>
 
 </div>
 
 </body>
+
 </html>
 """
 
 
 # ==========================================
-# صفحة الطالب الثاني
+# Student 2 Page
 # ==========================================
 
 receiver_page = """
 <!DOCTYPE html>
+
 <html lang="ar" dir="rtl">
 
 <head>
-    <meta charset="UTF-8">
 
-    <!-- تحديث الصفحة كل ثانيتين -->
-    <meta http-equiv="refresh" content="2">
+<meta charset="UTF-8">
 
-    <title>Receiver</title>
+<meta http-equiv="refresh" content="2">
 
-    <style>
+<title>Receiver</title>
 
-        body {
-            font-family: Arial;
-            background: #111;
-            color: white;
-            text-align: center;
-            padding-top: 80px;
-        }
+<style>
 
-        .box {
-            width: 500px;
-            max-width: 90%;
-            margin: auto;
-            padding: 40px;
-            background: #222;
-            border-radius: 20px;
-        }
+body {
+    font-family: Arial;
+    background: #111;
+    color: white;
+    text-align: center;
+    padding-top: 80px;
+}
 
-        .secret {
-            background: white;
-            color: red;
-            padding: 20px;
-            margin-top: 30px;
-            font-size: 28px;
-            border-radius: 10px;
-            font-weight: bold;
-            word-break: break-word;
-        }
+.box {
+    width: 500px;
+    max-width: 90%;
+    margin: auto;
+    padding: 40px;
+    background: #222;
+    border-radius: 20px;
+}
 
-        .warning {
-            color: orange;
-            margin-top: 30px;
-        }
+.secret {
+    background: white;
+    color: red;
+    padding: 20px;
+    margin-top: 30px;
+    font-size: 28px;
+    border-radius: 10px;
+    font-weight: bold;
+    word-break: break-word;
+}
 
-    </style>
+.warning {
+    color: orange;
+}
+
+</style>
 
 </head>
 
@@ -155,52 +211,54 @@ receiver_page = """
 
 <div class="box">
 
-    <h1>📡 Receiver</h1>
+<h1>📡 Receiver</h1>
 
-    <h2>آخر Training Secret مستلم:</h2>
+<h2>آخر Training Secret مستلم:</h2>
 
-    <div class="secret">
-        {{ secret }}
-    </div>
+<div class="secret">
 
-    <p class="warning">
-        ⚠️ هذا Demo تعليمي فقط
-    </p>
+{{ secret }}
+
+</div>
+
+<p class="warning">
+
+⚠️ هذا Demo تعليمي فقط
+
+</p>
 
 </div>
 
 </body>
+
 </html>
 """
 
 
 # ==========================================
-# استقبال البيانات من الطالب الأول
+# Student 1
 # ==========================================
 
 @app.route("/", methods=["GET", "POST"])
 def student():
-
-    global last_secret
 
     if request.method == "POST":
 
         username = request.form.get("username", "")
         secret = request.form.get("secret", "")
 
-        # السماح فقط بالـ Training Secret
+        # السماح فقط بالـTraining Secret
         if secret.startswith("TRAINING-"):
 
-            last_secret = secret
+            save_training_secret(username, secret)
 
-            # يظهر في Logs الخاصة بـ Render
             print("\n" + "=" * 60)
             print("🚨 PHISHING AWARENESS DEMONSTRATION")
             print("=" * 60)
             print(f"👤 Username: {username}")
             print(f"🔐 Training Secret: {secret}")
             print("=" * 60)
-            print("⚠️ هذا السر تدريبي وليس كلمة مرور حقيقية")
+            print("⚠️ Training Secret فقط")
             print("=" * 60 + "\n")
 
         else:
@@ -212,25 +270,32 @@ def student():
 
 
 # ==========================================
-# صفحة الطالب الثاني
+# Student 2
 # ==========================================
 
 @app.route("/receiver")
 def receiver():
 
+    secret = get_training_secret()
+
     return render_template_string(
         receiver_page,
-        secret=last_secret
+        secret=secret
     )
 
 
 # ==========================================
-# تشغيل التطبيق
+# Start
 # ==========================================
+
+init_db()
+
 
 if __name__ == "__main__":
 
+    port = int(os.environ.get("PORT", 5000))
+
     app.run(
         host="0.0.0.0",
-        port=5000
+        port=port
     )
